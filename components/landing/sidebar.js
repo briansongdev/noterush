@@ -12,18 +12,10 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import {
-  FiHome,
-  FiTrendingUp,
-  FiCompass,
-  FiStar,
-  FiSettings,
-  FiMenu,
-} from "react-icons/fi";
+import { FiHome, FiCompass, FiStar, FiSettings, FiMenu } from "react-icons/fi";
 
 const LinkItems = [
   { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
   { name: "Explore", icon: FiCompass },
   { name: "Favourites", icon: FiStar },
   { name: "Settings", icon: FiSettings },
@@ -51,7 +43,7 @@ export default function SimpleSidebar({ children }) {
         </DrawerContent>
       </Drawer>
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: "21%" }} p="4">
         {children}
       </Box>
     </Box>
@@ -60,22 +52,28 @@ export default function SimpleSidebar({ children }) {
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
-      bg={useColorModeValue("white", "gray.900")}
+      bg={"#2b6cb0"}
       borderRight="1px"
+      color="#bee3f8"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
+      w={{ base: "full", md: "21%" }}
       pos="fixed"
       h="full"
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontWeight="bold">
-          NoteRush
+        <Text
+          fontFamily="Lexend Deca"
+          color="white"
+          fontSize="4xl"
+          fontWeight="600"
+        >
+          noterush.
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem h="50" fontWeight="500" key={link.name} icon={link.icon}>
           {link.name}
         </NavItem>
       ))}
@@ -98,21 +96,12 @@ const NavItem = ({ icon, children, ...rest }) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
-          color: "white",
+          bg: "rgba(66, 153, 225, 0.6)",
+          transition: "0.3s",
         }}
         {...rest}
       >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: "white",
-            }}
-            as={icon}
-          />
-        )}
+        {icon && <Icon mr="4" fontSize="16" as={icon} />}
         {children}
       </Flex>
     </Link>
@@ -122,7 +111,7 @@ const NavItem = ({ icon, children, ...rest }) => {
 const MobileNav = ({ onOpen, ...rest }) => {
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
+      ml={{ base: 0, md: "21%" }}
       px={{ base: 4, md: 24 }}
       height="20"
       alignItems="center"
