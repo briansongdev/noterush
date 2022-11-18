@@ -11,6 +11,7 @@ import "../styles.css";
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 const theme = extendTheme({
   colors: {
@@ -28,22 +29,42 @@ const theme = extendTheme({
     },
   },
   fonts: {
-    heading: `'Inter', sans-serif`,
-    body: `'Inter', sans-serif`,
+    heading: `'Inter'`,
+    body: `'Inter'`,
   },
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
+  useEffect(() => {
+    document.fonts
+      .load("12px Inter")
+      .then(() =>
+        document.fonts
+          .load("12px Lexend Deca")
+          .then(() =>
+            document.fonts
+              .load("bold 12px Inter")
+              .then(() =>
+                document.fonts
+                  .load("500 12px Inter")
+                  .then(() => setIsReady(true))
+              )
+          )
+      );
+  }, []);
+
   return (
-    <SessionProvider session={session}>
-      <ChakraProvider theme={theme}>
-        <Head>
-          <title>noterush</title>
-        </Head>
-        <Component {...pageProps} />
-      </ChakraProvider>{" "}
-    </SessionProvider>
+    isReady && (
+      <SessionProvider session={session}>
+        <ChakraProvider theme={theme}>
+          <Head>
+            <title>noterush</title>
+          </Head>
+          <Component {...pageProps} />
+        </ChakraProvider>{" "}
+      </SessionProvider>
+    )
   );
 }
 

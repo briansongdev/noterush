@@ -1,20 +1,34 @@
 import Head from "next/head";
 import clientPromise from "../lib/mongodb";
-import Jumbotron from "../components/landing/jumbotron";
-import SimpleSidebar from "../components/landing/sidebar";
-import { Container, Text, Center, Button } from "@chakra-ui/react";
+import SimpleSidebar from "../components/authenticated/sidebar";
+import {
+  Container,
+  Text,
+  Center,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useEffect } from "react";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
 import { signOut } from "next-auth/react";
+import CustomSpinner from "../components/landing/spinner";
 
 export default function Home({ isConnected }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
+      <CustomSpinner
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+        extraText={"Have a good day, player!"}
+      />
       <SimpleSidebar>
         <Center h="90vh">
           <Button
             onClick={() => {
+              onOpen();
               signOut();
             }}
           >
