@@ -1,0 +1,12 @@
+#textGradient {
+    background: linear-gradient(to bottom, teal 50%, black 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+#noterush {
+    background: linear-gradient(to right, teal, gray);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

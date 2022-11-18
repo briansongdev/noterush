@@ -2,17 +2,24 @@ import Head from "next/head";
 import clientPromise from "../lib/mongodb";
 import Jumbotron from "../components/landing/jumbotron";
 import SimpleSidebar from "../components/landing/sidebar";
-import { Container, Text, Center } from "@chakra-ui/react";
+import { Container, Text, Center, Button } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
+import { signOut } from "next-auth/react";
 
-export default function Home({ isConnected, users }) {
+export default function Home({ isConnected }) {
   return (
     <>
       <SimpleSidebar>
         <Center h="90vh">
-          <Jumbotron currUsers={users} />
+          <Button
+            onClick={() => {
+              signOut();
+            }}
+          >
+            Sign out
+          </Button>
         </Center>
       </SimpleSidebar>
     </>
@@ -26,26 +33,17 @@ export async function getServerSideProps(context) {
       context.res,
       authOptions
     );
-    if (session) {
+    if (!session) {
       return {
         redirect: {
-          destination: "/home",
+          destination: "/",
           permanent: false,
         },
       };
     }
     await clientPromise;
-    let users = 0;
-    const client = await clientPromise;
-    const db = client.db("noterush");
-    await db
-      .collection("stats")
-      .findOne({})
-      .then((res) => {
-        users = res.users;
-      });
     return {
-      props: { isConnected: true, users: users },
+      props: {},
     };
   } catch (e) {
     console.error(e);

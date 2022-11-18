@@ -18,12 +18,15 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
-import { FiMenu, FiUserPlus, FiZap } from "react-icons/fi";
-import { useRouter } from "next/router";
+import { FiHome, FiMenu, FiBarChart2, FiUsers, FiTv } from "react-icons/fi";
+import { BsMusicNote } from "react-icons/bs";
 
 const LinkItems = [
-  { name: "Sign up", icon: FiUserPlus, url: "/register" },
-  { name: "Log in", icon: FiZap, url: "/login" },
+  { name: "Home", icon: FiHome },
+  { name: "Play", icon: BsMusicNote },
+  { name: "Watch", icon: FiTv },
+  { name: "Statistics", icon: FiBarChart2 },
+  { name: "My profile", icon: FiUsers },
 ];
 
 export default function SimpleSidebar({ children }) {
@@ -48,35 +51,25 @@ export default function SimpleSidebar({ children }) {
         </DrawerContent>
       </Drawer>
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: "17%" }} p="4">
+      <Box ml={{ base: 0, md: "21%" }} p="4">
         {children}
       </Box>
     </Box>
   );
 }
 const SidebarContent = ({ onClose, ...rest }) => {
-  const router = useRouter();
   return (
     <Box
       bg={"#008080"}
       borderRight="1px"
       color="#bee3f8"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: "17%" }}
+      w={{ base: "full", md: "21%" }}
       pos="fixed"
       h="full"
       {...rest}
     >
-      <Flex
-        h="20"
-        alignItems="center"
-        mx="8"
-        justifyContent="space-between"
-        cursor="pointer"
-        onClick={() => {
-          router.push("/");
-        }}
-      >
+      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text
           fontFamily="Lexend Deca"
           color="white"
@@ -88,17 +81,22 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem
-          h="50"
-          fontWeight="500"
-          key={link.name}
-          icon={link.icon}
-          url={link.url}
-        >
+        <NavItem h="50" fontWeight="500" key={link.name} icon={link.icon}>
           {link.name}
         </NavItem>
       ))}
-      <Box style={{ position: "absolute", bottom: 10, left: 20 }} w="100%">
+      {/* <Center mt="10px">
+        <VStack w="100%">
+          <Divider
+            w="70%"
+            borderWidth="2px"
+            borderColor="white"
+            backgroundColor="white"
+            borderRadius="15px"
+          />
+        </VStack>
+      </Center> */}
+      <Box style={{ position: "absolute", bottom: 10, left: 0 }} w="100%">
         <Center>
           <Grid
             templateRows="repeat(2, 1fr)"
@@ -128,14 +126,10 @@ const SidebarContent = ({ onClose, ...rest }) => {
   );
 };
 
-const NavItem = ({ icon, url, children, ...rest }) => {
-  const router = useRouter();
-
+const NavItem = ({ icon, children, ...rest }) => {
   return (
     <Link
-      onClick={() => {
-        router.push("/account/" + url);
-      }}
+      href="#"
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -162,7 +156,7 @@ const NavItem = ({ icon, url, children, ...rest }) => {
 const MobileNav = ({ onOpen, ...rest }) => {
   return (
     <Flex
-      ml={{ base: 0, md: "17%" }}
+      ml={{ base: 0, md: "21%" }}
       px={{ base: 4, md: 24 }}
       height="20"
       alignItems="center"
