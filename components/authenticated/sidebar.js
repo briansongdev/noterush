@@ -23,10 +23,10 @@ import { BsMusicNote } from "react-icons/bs";
 import { useRouter } from "next/router";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome },
-  { name: "Play", icon: BsMusicNote },
-  { name: "Watch", icon: FiTv },
-  { name: "Statistics", icon: FiBarChart2 },
+  { name: "Home", icon: FiHome, url: "home" },
+  { name: "Play", icon: BsMusicNote, url: "play" },
+  { name: "Watch", icon: FiTv, url: "watch" },
+  { name: "Statistics", icon: FiBarChart2, url: "statistics" },
 ];
 
 export default function SimpleSidebar({ name, rank, children }) {
@@ -93,7 +93,13 @@ const SidebarContent = ({ name, rank, onClose, ...rest }) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem h="50" fontWeight="500" key={link.name} icon={link.icon}>
+        <NavItem
+          h="50"
+          fontWeight="500"
+          key={link.name}
+          icon={link.icon}
+          url={link.url}
+        >
           {link.name}
         </NavItem>
       ))}
@@ -134,29 +140,55 @@ const SidebarContent = ({ name, rank, onClose, ...rest }) => {
   );
 };
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ url, icon, children, ...rest }) => {
+  const router = useRouter();
+  const { asPath } = useRouter();
   return (
     <Link
-      href="#"
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
+      onClick={() => {
+        if (asPath != "/" + url) {
+          router.push("/" + url);
+        }
+      }}
     >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: "rgba(0, 169, 175, 0.6)",
-          transition: "0.3s",
-        }}
-        {...rest}
-      >
-        {icon && <Icon mr="4" fontSize="24" as={icon} />}
-        {children}
-      </Flex>
+      {asPath == "/" + url ? (
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          color="#00292a"
+          _hover={{
+            bg: "rgba(0, 169, 175, 0.6)",
+            transition: "0.3s",
+          }}
+          {...rest}
+        >
+          {icon && <Icon mr="4" fontSize="24" as={icon} />}
+          {children}
+        </Flex>
+      ) : (
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          _hover={{
+            bg: "rgba(0, 169, 175, 0.6)",
+            transition: "0.3s",
+          }}
+          {...rest}
+        >
+          {icon && <Icon mr="4" fontSize="24" as={icon} />}
+          {children}
+        </Flex>
+      )}
     </Link>
   );
 };

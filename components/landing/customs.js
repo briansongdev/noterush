@@ -38,6 +38,9 @@ export const getRank = (elo) => {
     color: elo != 0 ? colors[Math.floor(elo / 200)] : "#bee3f8",
     isGradientRank: elo >= 1200 ? true : false,
     eloPoints: elo % 200,
+    nextRank: ranks[Math.min(ranks.length - 1, Math.floor(elo / 200) + 1)],
+    nextRankColor:
+      colors[Math.min(ranks.length - 1, Math.floor(elo / 200) + 1)],
   };
   return rankObject;
 };

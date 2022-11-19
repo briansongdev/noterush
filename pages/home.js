@@ -20,10 +20,12 @@ import { signOut } from "next-auth/react";
 import CustomSpinner from "../components/landing/spinner";
 import HighlightText, { getRank } from "../components/landing/customs";
 import { ObjectId } from "mongodb";
+import axios from "axios";
 
 export default function Home({ user }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const firstLoadUser = JSON.parse(user);
+
   return (
     <>
       <CustomSpinner
