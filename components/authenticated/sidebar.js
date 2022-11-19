@@ -20,20 +20,22 @@ import {
 } from "@chakra-ui/react";
 import { FiHome, FiMenu, FiBarChart2, FiUsers, FiTv } from "react-icons/fi";
 import { BsMusicNote } from "react-icons/bs";
+import { useRouter } from "next/router";
 
 const LinkItems = [
   { name: "Home", icon: FiHome },
   { name: "Play", icon: BsMusicNote },
   { name: "Watch", icon: FiTv },
   { name: "Statistics", icon: FiBarChart2 },
-  { name: "My profile", icon: FiUsers },
 ];
 
-export default function SimpleSidebar({ children }) {
+export default function SimpleSidebar({ name, rank, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <SidebarContent
+        name={name}
+        rank={rank}
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
       />
@@ -57,7 +59,8 @@ export default function SimpleSidebar({ children }) {
     </Box>
   );
 }
-const SidebarContent = ({ onClose, ...rest }) => {
+const SidebarContent = ({ name, rank, onClose, ...rest }) => {
+  const router = useRouter();
   return (
     <Box
       bg={"#008080"}
@@ -69,12 +72,21 @@ const SidebarContent = ({ onClose, ...rest }) => {
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+      <Flex
+        h="20"
+        alignItems="center"
+        mx="8"
+        justifyContent="space-between"
+        onClick={() => {
+          router.push("/");
+        }}
+      >
         <Text
           fontFamily="Lexend Deca"
           color="white"
           fontSize="4xl"
           fontWeight="600"
+          cursor="pointer"
         >
           noterush.
         </Text>
@@ -85,17 +97,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
           {link.name}
         </NavItem>
       ))}
-      {/* <Center mt="10px">
-        <VStack w="100%">
-          <Divider
-            w="70%"
-            borderWidth="2px"
-            borderColor="white"
-            backgroundColor="white"
-            borderRadius="15px"
-          />
-        </VStack>
-      </Center> */}
       <Box style={{ position: "absolute", bottom: 10, left: 0 }} w="100%">
         <Center>
           <Grid
@@ -111,12 +112,19 @@ const SidebarContent = ({ onClose, ...rest }) => {
             </GridItem>
             <GridItem colSpan={4}>
               <Text fontSize="lg" fontWeight="700">
-                Not logged in{" "}
+                {name}{" "}
               </Text>
             </GridItem>
             <GridItem colSpan={4}>
               <Text fontSize="sm">
-                <span style={{ fontWeight: "bold" }}>Unranked</span>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: rank ? rank.color : "#bee3f8",
+                  }}
+                >
+                  {rank && rank.name} {rank && rank.eloPoints + "/200"}
+                </span>
               </Text>
             </GridItem>
           </Grid>
@@ -174,7 +182,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       />
 
       <Text fontSize="2xl" ml="8" fontWeight="bold">
-        NoteRush
+        noterush
       </Text>
     </Flex>
   );

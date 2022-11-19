@@ -41,12 +41,20 @@ export default async function handler(req, res) {
           createdOn: new Date(),
           elo: 0,
           username: req.body.username,
-          exp: 1000,
+          exp: 500,
           sheets: 0,
           currentMatch: "",
           pastMatchIds: [],
         };
         let uid = await db.collection("users").insertOne(newBody);
+        await db.collection("stats").updateOne(
+          {},
+          {
+            $inc: {
+              users: 1,
+            },
+          }
+        );
         // return a message
         return res.json({
           uid: uid.insertedId,

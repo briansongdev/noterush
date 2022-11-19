@@ -13,3 +13,31 @@ export default function HighlightText({ children }) {
     </span>
   );
 }
+
+export const getRank = (elo) => {
+  let ranks = [
+    "GILDED",
+    "STEELED",
+    "REFINED",
+    "LAPIS",
+    "EMERALD",
+    "CRYSTALLINE",
+    "GLISTENING",
+  ];
+  let colors = [
+    "#B8860B",
+    "#D9DADB",
+    "#FBCEB1",
+    "#00008B",
+    "#98FB98",
+    "#CF9FFF",
+    "gradient",
+  ];
+  let rankObject = {
+    name: elo != 0 ? ranks[Math.floor(elo / 200)] : "UNRANKED",
+    color: elo != 0 ? colors[Math.floor(elo / 200)] : "#bee3f8",
+    isGradientRank: elo >= 1200 ? true : false,
+    eloPoints: elo % 200,
+  };
+  return rankObject;
+};

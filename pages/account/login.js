@@ -121,8 +121,6 @@ export async function getServerSideProps(context) {
     };
   }
   try {
-    await clientPromise;
-
     return {
       props: { isConnected: true },
     };

@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 
 export default function Jumbotron({ currUsers }) {
+  console.log(currUsers);
   return (
     <SlideFade
       in={true}
@@ -76,7 +77,9 @@ export default function Jumbotron({ currUsers }) {
                 Discover how it works →
               </Button>
               <Text my={2} fontSize="sm" color="gray.500">
-                {currUsers > 0 ? currUsers + " current users" : ""}
+                {currUsers > 0
+                  ? currUsers + "+ players waiting for you to join"
+                  : ""}
               </Text>
             </Container>
           </VStack>
