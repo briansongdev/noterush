@@ -48,7 +48,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
               .then(() =>
                 document.fonts
                   .load("500 12px Inter")
-                  .then(() => setIsReady(true))
+                  .then(() =>
+                    document.fonts
+                      .load("600 12px Inter")
+                      .then(() => setIsReady(true))
+                  )
               )
           )
       );

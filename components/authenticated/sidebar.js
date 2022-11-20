@@ -128,6 +128,7 @@ const SidebarContent = ({ name, rank, onClose, ...rest }) => {
                     fontWeight: "bold",
                     color: rank ? rank.color : "#bee3f8",
                   }}
+                  id={rank.color == "" ? "highRankIcon" : ""}
                 >
                   {rank && rank.name} {rank && rank.eloPoints + "/200"}
                 </span>

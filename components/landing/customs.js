@@ -31,7 +31,7 @@ export const getRank = (elo) => {
     "#00008B",
     "#98FB98",
     "#CF9FFF",
-    "gradient",
+    "",
   ];
   let rankObject = {
     name: elo != 0 ? ranks[Math.floor(elo / 200)] : "UNRANKED",

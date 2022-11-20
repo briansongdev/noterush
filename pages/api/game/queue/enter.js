@@ -56,6 +56,7 @@ async function hello(req, res, auth, user) {
                   .collection("games")
                   .insertOne({
                     createdOn: new Date(),
+                    startsAt: new Date(Date.now() + 30000),
                     player1: u.initiator,
                     player2: user._id,
                     isRanked: req.body.isRanked,
@@ -72,25 +73,25 @@ async function hello(req, res, auth, user) {
                     roundNotes: [
                       [0],
                       [
-                        new Array(3).fill(noteGen()),
-                        new Array(5).fill(noteGen()),
-                        new Array(7).fill(noteGen()),
-                        new Array(9).fill(noteGen()),
-                        new Array(11).fill(noteGen()),
+                        Array.from({ length: 3 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 7 }, () => noteGen()),
+                        Array.from({ length: 9 }, () => noteGen()),
+                        Array.from({ length: 11 }, () => noteGen()),
                       ],
                       [
-                        new Array(3).fill(noteGen()),
-                        new Array(5).fill(noteGen()),
-                        new Array(7).fill(noteGen()),
-                        new Array(9).fill(noteGen()),
-                        new Array(11).fill(noteGen()),
+                        Array.from({ length: 3 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 7 }, () => noteGen()),
+                        Array.from({ length: 9 }, () => noteGen()),
+                        Array.from({ length: 11 }, () => noteGen()),
                       ],
                       [
-                        new Array(3).fill(noteGen()),
-                        new Array(5).fill(noteGen()),
-                        new Array(7).fill(noteGen()),
-                        new Array(9).fill(noteGen()),
-                        new Array(11).fill(noteGen()),
+                        Array.from({ length: 3 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 7 }, () => noteGen()),
+                        Array.from({ length: 9 }, () => noteGen()),
+                        Array.from({ length: 11 }, () => noteGen()),
                       ],
                     ],
                     time1: 120,
@@ -101,7 +102,7 @@ async function hello(req, res, auth, user) {
                       { _id: ObjectId(user._id) },
                       {
                         $set: {
-                          currentMatch: a.insertedId,
+                          currentMatch: a.insertedId.toString(),
                         },
                       }
                     );
@@ -109,12 +110,15 @@ async function hello(req, res, auth, user) {
                       { _id: ObjectId(u.initiator) },
                       {
                         $set: {
-                          currentMatch: a.insertedId,
+                          currentMatch: a.insertedId.toString(),
                         },
                       }
                     );
+                    await db.collection("queue").deleteOne({
+                      initiator: u.initiator,
+                    });
                     const response = await pusher.trigger(
-                      u.initiator,
+                      u.initiator.toString(),
                       "opponent-found",
                       {
                         message: a.insertedId,
@@ -151,6 +155,7 @@ async function hello(req, res, auth, user) {
                   .collection("games")
                   .insertOne({
                     createdOn: new Date(),
+                    startsAt: new Date(Date.now() + 30000),
                     player1: u.initiator,
                     player2: user._id,
                     isRanked: req.body.isRanked,
@@ -167,25 +172,25 @@ async function hello(req, res, auth, user) {
                     roundNotes: [
                       [0],
                       [
-                        new Array(3).fill(noteGen()),
-                        new Array(5).fill(noteGen()),
-                        new Array(7).fill(noteGen()),
-                        new Array(9).fill(noteGen()),
-                        new Array(11).fill(noteGen()),
+                        Array.from({ length: 3 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 7 }, () => noteGen()),
+                        Array.from({ length: 9 }, () => noteGen()),
+                        Array.from({ length: 11 }, () => noteGen()),
                       ],
                       [
-                        new Array(3).fill(noteGen()),
-                        new Array(5).fill(noteGen()),
-                        new Array(7).fill(noteGen()),
-                        new Array(9).fill(noteGen()),
-                        new Array(11).fill(noteGen()),
+                        Array.from({ length: 3 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 7 }, () => noteGen()),
+                        Array.from({ length: 9 }, () => noteGen()),
+                        Array.from({ length: 11 }, () => noteGen()),
                       ],
                       [
-                        new Array(3).fill(noteGen()),
-                        new Array(5).fill(noteGen()),
-                        new Array(7).fill(noteGen()),
-                        new Array(9).fill(noteGen()),
-                        new Array(11).fill(noteGen()),
+                        Array.from({ length: 3 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 7 }, () => noteGen()),
+                        Array.from({ length: 9 }, () => noteGen()),
+                        Array.from({ length: 11 }, () => noteGen()),
                       ],
                     ],
                     time1: 120,
@@ -196,7 +201,7 @@ async function hello(req, res, auth, user) {
                       { _id: ObjectId(user._id) },
                       {
                         $set: {
-                          currentMatch: a.insertedId,
+                          currentMatch: a.insertedId.toString(),
                         },
                       }
                     );
@@ -204,18 +209,20 @@ async function hello(req, res, auth, user) {
                       { _id: ObjectId(u.initiator) },
                       {
                         $set: {
-                          currentMatch: a.insertedId,
+                          currentMatch: a.insertedId.toString(),
                         },
                       }
                     );
+                    await db.collection("queue").deleteOne({
+                      initiator: u.initiator,
+                    });
                     const response = await pusher.trigger(
-                      u.initiator,
+                      u.initiator.toString(),
                       "opponent-found",
                       {
                         message: a.insertedId,
                       }
                     );
-
                     return res.json({
                       success: true,
                       shouldRedirect: true,

@@ -186,7 +186,8 @@ export async function getServerSideProps(context) {
         },
       };
     }
-    let user;
+    let user,
+      inGameCheck = false;
     const client = await clientPromise;
     const db = client.db("noterush");
     await db
@@ -194,7 +195,17 @@ export async function getServerSideProps(context) {
       .findOne({ _id: ObjectId(session.user.name) })
       .then((res) => {
         user = res;
+        if (res.currentMatch != "") {
+          inGameCheck = true;
+        }
       });
+    if (inGameCheck)
+      return {
+        redirect: {
+          destination: "/game",
+          permanent: false,
+        },
+      };
     user = JSON.stringify(user);
     return {
       props: { user },

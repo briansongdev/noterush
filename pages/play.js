@@ -59,14 +59,14 @@ export default function Home({ user }) {
       cluster: "us3",
       forceTLS: true,
     });
-    const channel = pusher.subscribe(firstLoadUser._id);
+    const channel = pusher.subscribe(firstLoadUser._id.toString());
     channel.bind("opponent-found", function (data) {
       sound1.play();
       onOpen();
       setTimeout(() => router.push("/game"), 1000);
     });
     return () => {
-      pusher.unsubscribe(firstLoadUser._id);
+      pusher.unsubscribe(firstLoadUser._id.toString());
     };
   }, []);
 
@@ -86,34 +86,58 @@ export default function Home({ user }) {
             </Heading>
             <Heading fontSize={"2xl"}>
               Your cumulative rating is currently{" "}
-              <span style={{ color: rankObj.color }}>{firstLoadUser.elo}.</span>
+              <span
+                style={{ color: rankObj.color }}
+                id={rankObj.color == "" ? "highRankIcon" : ""}
+              >
+                {firstLoadUser.elo}.
+              </span>
             </Heading>
-            <Progress
-              sx={{
-                "& > div": {
-                  background: rankObj.color,
-                },
-              }}
-              width="60%"
-              height="20px"
-              borderRadius="100px"
-              backgroundColor="white"
-              value={
-                firstLoadUser.elo >= 1200 ? 100 : (firstLoadUser.elo % 200) / 2
-              }
-            />
-            <HStack
-              justifyContent="space-between"
-              alignSelf="center"
-              width="60%"
-            >
-              <Text color={rankObj.color} fontWeight="bold">
-                {rankObj.name}
-              </Text>
-              <Text color={rankObj.nextRankColor} fontWeight="bold">
-                {rankObj.nextRank}
-              </Text>
-            </HStack>
+            {rankObj.color != "" && (
+              <Progress
+                sx={{
+                  "& > div": {
+                    background: rankObj.color,
+                  },
+                }}
+                width="60%"
+                height="20px"
+                borderRadius="100px"
+                backgroundColor="white"
+                value={
+                  firstLoadUser.elo >= 1200
+                    ? 100
+                    : (firstLoadUser.elo % 200) / 2
+                }
+              />
+            )}
+            {rankObj.color != "" && (
+              <HStack
+                justifyContent="space-between"
+                alignSelf="center"
+                width="60%"
+              >
+                <Text
+                  color={rankObj.color}
+                  id={rankObj.color == "" ? "highRankIcon" : ""}
+                  fontWeight="bold"
+                >
+                  {rankObj.name}
+                </Text>
+                <Text
+                  color={rankObj.nextRankColor}
+                  id={rankObj.nextRankColor == "" ? "highRankIcon" : ""}
+                  fontWeight="bold"
+                >
+                  {rankObj.nextRank}
+                </Text>
+              </HStack>
+            )}
+            {rankObj.color == "" && (
+              <Heading fontSize="xl" id="highRankIcon">
+                You're GLISTENING!
+              </Heading>
+            )}
             <Center alignSelf="center" width="80%">
               <VStack mt="20px" spacing={6}>
                 <Button
@@ -265,6 +289,13 @@ export async function getServerSideProps(context) {
       .findOne({ _id: ObjectId(session.user.name) })
       .then((res) => {
         user = res;
+        if (user.currentMatch != "")
+          return {
+            redirect: {
+              destination: "/game",
+              permanent: false,
+            },
+          };
       });
     user = JSON.stringify(user);
     return {
