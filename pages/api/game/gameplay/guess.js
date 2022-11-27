@@ -1,6 +1,15 @@
 import { ObjectId } from "mongodb";
 import clientPromise from "../../../../lib/mongodb";
 import withDatabase from "../../auth/middle";
+import Pusher from "pusher";
+
+export const pusher = new Pusher({
+  appId: process.env.APP_ID,
+  key: process.env.KEY,
+  secret: process.env.SECRET,
+  cluster: process.env.CLUSTER,
+  useTLS: true,
+});
 
 // body:
 // authentication (email, pass)
@@ -97,12 +106,29 @@ async function hello(req, res, auth, user) {
         );
         if (newRound < gameObj.roundNotes.length) {
           let updatedObj = {
-            timeLeft: 120 - (new Date(Date.now()) - gameObj.startsAt) / 1000,
+            timeLeft: Math.floor(
+              120 - (new Date(Date.now()) - gameObj.startsAt) / 1000
+            ),
             round: newRound,
             level: newLevel,
             score: gameObj.score1 + pointsToAdd,
             changeInScore: pointsToAdd,
           };
+          const response = await pusher.trigger(
+            gameObj.player1.toString(),
+            "game-updates",
+            {
+              isPlayer1: isp1,
+              isFinished: false,
+              timeLeft: Math.floor(
+                120 - (new Date(Date.now()) - gameObj.startsAt) / 1000
+              ),
+              score: gameObj.score1 + pointsToAdd,
+              changeInScore: pointsToAdd,
+              round: newRound,
+              level: newLevel,
+            }
+          );
           return res.status(200).json({
             success: true,
             finished: false,
@@ -118,15 +144,25 @@ async function hello(req, res, auth, user) {
               },
               $inc: {
                 score1: Math.floor(
-                  (120 - (new Date(Date.now()) - gameObj.startsAt)) / 2000
+                  120 - (new Date(Date.now()) - gameObj.startsAt) / 2000
                 ),
               },
+            }
+          );
+          const response = await pusher.trigger(
+            gameObj.player1.toString(),
+            "game-updates",
+            {
+              isPlayer1: isp1,
+              isFinished: true,
+              score: gameObj.score2 + pointsToAdd,
+              changeInScore: pointsToAdd,
             }
           );
           return res.status(200).json({
             success: true,
             finished: true,
-            score: gameObj.score1 + pointsToAdd,
+            score: gameObj.score2 + pointsToAdd,
             changeInScore: pointsToAdd,
           });
         }
@@ -138,10 +174,84 @@ async function hello(req, res, auth, user) {
         } else {
           newRound--;
         }
-        // is done on time?
         // is done with all levels?
-        if (newRound >= gameObj.roundNotes.length) {
+        await db.collection("games").updateOne(
+          { _id: ObjectId(user.currentMatch) },
+          {
+            $set: {
+              time1: 120 - (new Date(Date.now()) - gameObj.startsAt) / 1000,
+              currentRoundp2: newRound,
+              currentLevelp2: newLevel,
+            },
+            $inc: {
+              score2: pointsToAdd,
+            },
+            $push: {
+              p2Guesses: guessArr,
+            },
+          }
+        );
+        if (newRound < gameObj.roundNotes.length) {
+          let updatedObj = {
+            timeLeft: Math.floor(
+              120 - (new Date(Date.now()) - gameObj.startsAt) / 1000
+            ),
+            round: newRound,
+            level: newLevel,
+            score: gameObj.score2 + pointsToAdd,
+            changeInScore: pointsToAdd,
+          };
+          const response = await pusher.trigger(
+            gameObj.player1.toString(),
+            "game-updates",
+            {
+              isPlayer1: isp1,
+              isFinished: false,
+              timeLeft: Math.floor(
+                120 - (new Date(Date.now()) - gameObj.startsAt) / 1000
+              ),
+              score: gameObj.score2 + pointsToAdd,
+              changeInScore: pointsToAdd,
+              round: newRound,
+              level: newLevel,
+            }
+          );
+          return res.status(200).json({
+            success: true,
+            finished: false,
+            game: updatedObj,
+          });
         } else {
+          // done with all levels
+          await db.collection("games").updateOne(
+            { _id: ObjectId(user.currentMatch) },
+            {
+              $set: {
+                p2Done: true,
+              },
+              $inc: {
+                score2: Math.floor(
+                  120 - (new Date(Date.now()) - gameObj.startsAt) / 2000
+                ),
+              },
+            }
+          );
+          const response = await pusher.trigger(
+            gameObj.player1.toString(),
+            "game-updates",
+            {
+              isPlayer1: isp1,
+              isFinished: true,
+              score: gameObj.score2 + pointsToAdd,
+              changeInScore: pointsToAdd,
+            }
+          );
+          return res.status(200).json({
+            success: true,
+            finished: true,
+            score: gameObj.score2 + pointsToAdd,
+            changeInScore: pointsToAdd,
+          });
         }
       }
     } else {
