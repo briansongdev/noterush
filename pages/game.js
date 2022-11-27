@@ -15,14 +15,15 @@ import {
 import { useEffect } from "react";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
-import { signOut } from "next-auth/react";
-import CustomSpinner from "../components/landing/spinner";
 import HighlightText, { getRank } from "../components/landing/customs";
 import { ObjectId } from "mongodb";
 import axios from "axios";
 
 export default function Home({ gameObj }) {
   const go = JSON.parse(gameObj);
+  // const [playerTime, setPlayerTime] = useState(go.p1time)
+
+  // inactivity timer for 2 minutes using Pusher
   return (
     <>
       <Heading m="20px" fontSize={"2xl"} marginBottom="20px">

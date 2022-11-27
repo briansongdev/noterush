@@ -56,13 +56,18 @@ async function hello(req, res, auth, user) {
                   .collection("games")
                   .insertOne({
                     createdOn: new Date(),
-                    startsAt: new Date(Date.now() + 30000),
+                    startsAt: new Date(Date.now() + 10000),
                     player1: u.initiator,
                     player2: user._id,
                     isRanked: req.body.isRanked,
                     score1: 0,
                     score2: 0,
-                    currentRound: 1,
+                    currentRoundp1: 1,
+                    currentRoundp2: 1,
+                    currentLevelp1: 1,
+                    currentLevelp2: 1,
+                    p1Guesses: [],
+                    p2Guesses: [],
                     rounds: [
                       "Welcome Round",
                       round1Types[0],
@@ -96,6 +101,10 @@ async function hello(req, res, auth, user) {
                     ],
                     time1: 120,
                     time2: 120,
+                    shift: noteGen(),
+                    p1Done: false,
+                    p2Done: false,
+                    active: true,
                   })
                   .then(async (a) => {
                     await db.collection("users").updateOne(
@@ -155,13 +164,18 @@ async function hello(req, res, auth, user) {
                   .collection("games")
                   .insertOne({
                     createdOn: new Date(),
-                    startsAt: new Date(Date.now() + 30000),
+                    startsAt: new Date(Date.now() + 10000),
                     player1: u.initiator,
                     player2: user._id,
                     isRanked: req.body.isRanked,
                     score1: 0,
                     score2: 0,
-                    currentRound: 1,
+                    currentRoundp1: 1,
+                    currentRoundp2: 1,
+                    currentLevelp1: 1,
+                    currentLevelp2: 1,
+                    p1Guesses: [],
+                    p2Guesses: [],
                     rounds: [
                       "Welcome Round",
                       round1Types[0],
@@ -195,6 +209,10 @@ async function hello(req, res, auth, user) {
                     ],
                     time1: 120,
                     time2: 120,
+                    shift: noteGen(),
+                    p1Done: false,
+                    p2Done: false,
+                    active: true,
                   })
                   .then(async (a) => {
                     await db.collection("users").updateOne(
