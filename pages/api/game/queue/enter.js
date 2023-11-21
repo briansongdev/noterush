@@ -21,7 +21,7 @@ const noteGen = rn.generator({
   max: 11,
   integer: true,
 });
-const round1Types = ["Piano"]; // Level 1 (3 notes, 1x), 2 (5, 1.1), 3 (7, 1.2), 4 (9, 1.3), 5 (11, 1.5) bonus points
+const round1Types = ["Piano"]; // Level 1 (3 notes, 1x), 2 (5, 1.1), 3 (5, 1.2), 4 (5, 1.3), 5 (5, 1.5) bonus points
 const round2Types = ["Violin", "Viola", "Cello"];
 const round3Types = ["Guitar", "Flute", "Trumpet"];
 const round4Types = ["Pop", "Electronic"]; // WIP
@@ -69,7 +69,7 @@ async function hello(req, res, auth, user) {
                     p1Guesses: [],
                     p2Guesses: [],
                     rounds: [
-                      "Welcome Round",
+                      "Welcome",
                       round1Types[0],
                       round2Types[rn({ min: 0, max: 2, integer: true })],
                       round3Types[rn({ min: 0, max: 2, integer: true })],
@@ -80,23 +80,23 @@ async function hello(req, res, auth, user) {
                       [
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 7 }, () => noteGen()),
-                        Array.from({ length: 9 }, () => noteGen()),
-                        Array.from({ length: 11 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                       [
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 7 }, () => noteGen()),
-                        Array.from({ length: 9 }, () => noteGen()),
-                        Array.from({ length: 11 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                       [
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 7 }, () => noteGen()),
-                        Array.from({ length: 9 }, () => noteGen()),
-                        Array.from({ length: 11 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                     ],
                     time1: 120,
@@ -133,24 +133,23 @@ async function hello(req, res, auth, user) {
                         message: a.insertedId,
                       }
                     );
-                    return res.json({
+                    return res.status(200).json({
                       success: true,
                       shouldRedirect: true,
                     });
                   });
-              } else foundOppo = false;
+              } else {
+                await db.collection("queue").insertOne({
+                  initiator: user._id,
+                  ranked: true,
+                  elo: user.elo,
+                });
+                return res.status(200).json({
+                  success: true,
+                  shouldRedirect: false,
+                });
+              }
             });
-          if (!foundOppo) {
-            await db.collection("queue").insertOne({
-              initiator: user._id,
-              ranked: true,
-              elo: user.elo,
-            });
-            return res.json({
-              success: true,
-              shouldRedirect: false,
-            });
-          }
         } else {
           let foundOppo = true;
           await db
@@ -177,7 +176,7 @@ async function hello(req, res, auth, user) {
                     p1Guesses: [],
                     p2Guesses: [],
                     rounds: [
-                      "Welcome Round",
+                      "Welcome",
                       round1Types[0],
                       round2Types[rn({ min: 0, max: 2, integer: true })],
                       round3Types[rn({ min: 0, max: 2, integer: true })],
@@ -241,24 +240,23 @@ async function hello(req, res, auth, user) {
                         message: a.insertedId,
                       }
                     );
-                    return res.json({
+                    return res.status(200).json({
                       success: true,
                       shouldRedirect: true,
                     });
                   });
-              } else foundOppo = false;
+              } else {
+                await db.collection("queue").insertOne({
+                  initiator: user._id,
+                  ranked: false,
+                  elo: user.elo,
+                });
+                return res.status(200).json({
+                  success: true,
+                  shouldRedirect: false,
+                });
+              }
             });
-          if (!foundOppo) {
-            await db.collection("queue").insertOne({
-              initiator: user._id,
-              ranked: false,
-              elo: user.elo,
-            });
-            return res.status(200).json({
-              success: true,
-              shouldRedirect: false,
-            });
-          }
         }
       } else {
         return res.status(200).json({
