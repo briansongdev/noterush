@@ -16,8 +16,8 @@ export default function Round2({ time, go }) {
   const [level, setLevel] = useState(
     go.isp1 ? go.currentLevelp1 : go.currentLevelp2
   );
-  const speed = [1, 1.1, 1.2, 1.3, 1.5];
-  const numNotes = [3, 5, 5, 5, 5];
+  const speed = [1, 1.2, 1.5];
+  const numNotes = [3, 5, 5];
   const notes = [
     "A4",
     "A#4",
@@ -66,7 +66,9 @@ export default function Round2({ time, go }) {
                 for (let i = 0; i < go.roundNotes[1][level - 1].length; i++) {
                   scheduledNotes.push({
                     time: (i * 0.7) / speed[level - 1],
-                    note: notes[go.roundNotes[1][level - 1][i] + go.shift],
+                    note: notes[
+                      (go.roundNotes[1][level - 1][i] + go.shift) % notes.length
+                    ],
                   });
                 }
                 instr.schedule(ac.currentTime, scheduledNotes);

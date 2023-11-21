@@ -21,7 +21,7 @@ const noteGen = rn.generator({
   max: 11,
   integer: true,
 });
-const round1Types = ["Piano"]; // Level 1 (3 notes, 1x), 2 (5, 1.1), 3 (5, 1.2), 4 (5, 1.3), 5 (5, 1.5) bonus points
+const round1Types = ["Piano"]; // Level 1 (3 notes, 1x), 2 (5, 1.2), 3 (5, 1.5)
 const round2Types = ["Violin", "Viola", "Cello"];
 const round3Types = ["Guitar", "Flute", "Trumpet"];
 const round4Types = ["Pop", "Electronic"]; // WIP
@@ -88,13 +88,9 @@ async function hello(req, res, auth, user) {
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                       [
                         Array.from({ length: 3 }, () => noteGen()),
-                        Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 5 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
                       ],
@@ -187,23 +183,17 @@ async function hello(req, res, auth, user) {
                       [
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 7 }, () => noteGen()),
-                        Array.from({ length: 9 }, () => noteGen()),
-                        Array.from({ length: 11 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                       [
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 7 }, () => noteGen()),
-                        Array.from({ length: 9 }, () => noteGen()),
-                        Array.from({ length: 11 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                       [
                         Array.from({ length: 3 }, () => noteGen()),
                         Array.from({ length: 5 }, () => noteGen()),
-                        Array.from({ length: 7 }, () => noteGen()),
-                        Array.from({ length: 9 }, () => noteGen()),
-                        Array.from({ length: 11 }, () => noteGen()),
+                        Array.from({ length: 5 }, () => noteGen()),
                       ],
                     ],
                     time1: 120,
